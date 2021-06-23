@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,7 +12,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import LinkRouter from 'react-router-dom/Link';
+import { withRouter } from 'react-router';
+import firebase from '../firebase';
 
 function Copyright() {
   return (
@@ -47,8 +48,49 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignUp() {
-  const classes = useStyles();
+function SignUp({history}) {
+  
+    const classes = useStyles();
+
+    const handleSignUp = useCallback(async event => {
+      event.preventDefault();
+      const { email, password } = event.target.elements;
+      try {
+              const res = await firebase.auth().createUserWithEmailAndPassword(email.value, password.value);
+              console.log(res);
+              console.log(res.user);
+              if(res&&res.user)
+                {
+                    console.log("uid",res.user.uid);
+                    var item = {}
+                    item["name"]="anonym";
+                    item["birthyear"]=2000;
+                    item["maxYear"]=0;
+
+                    const user_ref = firebase.firestore().collection("Users").doc(res.user.uid);
+                    try{
+                          user_ref.set(item).then((doc)=>{
+                                console.log("user initiated in db",doc);
+                           });
+                    }catch(err)
+                    {
+                        console.log("error",err);
+                    }
+                      
+                    await res.user.sendEmailVerification();
+                    //await is need to do the upper insertion in db
+                    await firebase.auth().signOut();
+                    alert("Signup is successful. We also sent you a verification email.");
+                }
+              //history.push("/signin");
+      } catch (error) {
+            console.log(error);
+            alert(error.message);
+            //alert("Signup process is stopped. Please contact our staff for more info.");
+      }
+    }, [history]);  
+
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -60,9 +102,9 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSignUp} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+{/*             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="fname"
                 name="firstName"
@@ -85,7 +127,7 @@ export default function SignUp() {
                 autoComplete="lname"
               />
             </Grid>
-            <Grid item xs={12}>
+ */}            <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
@@ -102,22 +144,32 @@ export default function SignUp() {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="New Password"
                 type="password"
                 id="password"
-                autoComplete="current-password"
+                //autoComplete="current-password"
               />
             </Grid>
             <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="repeat password"
+                label="Repeat Password"
+                type="password"
+                id="repeat password"
+                //autoComplete="current-password"
+              />
+            </Grid>            
+{/*             <Grid item xs={12}>
               <FormControlLabel
                 control={<Checkbox value="allowExtraEmails" color="primary" />}
                 label="I want to receive inspiration, marketing promotions and updates via email."
               />
-            </Grid>
+            </Grid> */}
           </Grid>
           <Button
-            component = {LinkRouter}
-            to = {'home'}
             type="submit"
             fullWidth
             variant="contained"
@@ -128,7 +180,7 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href={'./signin'} variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
@@ -141,3 +193,5 @@ export default function SignUp() {
     </Container>
   );
 }
+
+export default withRouter(SignUp);

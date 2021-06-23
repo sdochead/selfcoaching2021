@@ -1,10 +1,16 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import Link from 'react-router-dom/Link';
+import Route from 'react-router-dom/Link';
 import Button from '@material-ui/core/Button';
+import SignIn from './templates/SignIn';
+import { Redirect } from 'react-router-dom';
+import App from './App';
+import ReactDOM from 'react-dom';
+
 
 
 export default function Landing() {
+
 
     return(
         <div>
@@ -14,12 +20,12 @@ export default function Landing() {
             </Typography>
             <Typography align='center' variant="body1">
         
-            <Button component={Link} to={"./signin"} variant="contained" color="primary" align = 'center'>Get Started</Button>
-        
+            <Button href={"./index.html"} variant="contained" color="primary" align = 'center'>Get Started</Button>
 
             <p>Get your future in your hand</p>
             </Typography>
         </div>
     );
+
 
 }

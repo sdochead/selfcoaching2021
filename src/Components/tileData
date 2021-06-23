@@ -1,0 +1,11 @@
+import image from '/knee.jpg';
+
+ 
+const tileData = [
+    {
+      img: image,
+      title: 'knee',
+      author: 'Amir',
+    },
+
+];

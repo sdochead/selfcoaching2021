@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,15 +12,16 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import LinkRouter from 'react-router-dom/Link';
+import { AuthContext } from "../Components/Auth.js";
+import {Redirect,withRouter} from 'react-router';
+import firebase from '../firebase';
+import StyledPaper from '../Components/StyledPaper.js';
+import GoogleButton from 'react-google-button'
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
+      {'Copyright © Personal Map of Life '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>
@@ -47,20 +48,112 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+function SignIn({history}) {
   const classes = useStyles();
+
+  const handleLogin = useCallback(
+    async event => {
+      event.preventDefault();
+      const { email, password } = event.target.elements;
+      try {
+        await firebase
+          .auth()
+          .signInWithEmailAndPassword(email.value, password.value);
+        history.push("/");
+      } catch (error) {
+        alert(error);
+      }
+    },
+    [history]
+  );
+
+  const { currentUser } = useContext(AuthContext);
+
+  if (currentUser) {
+    return <Redirect to="/" />;
+  }
+
+  function googleLoginRedirect() {
+    // [START auth_google_signin_redirect_result]
+    var provider = new firebase.auth.GoogleAuthProvider();
+
+    firebase.auth().signInWithRedirect(provider);
+
+    firebase.auth()
+      .getRedirectResult()
+      .then((result) => {
+        if (result.credential) {
+          /** @type {firebase.auth.OAuthCredential} */
+          var credential = result.credential;
+  
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          var token = credential.accessToken;
+          console.log(token);
+        }
+        // The signed-in user info.
+        var user = result.user;
+      }).catch((error) => {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        console.log(error);
+      });
+    // [END auth_google_signin_redirect_result]
+  }
+  
+  function googleLoginPopUp()
+  {
+
+    var provider = new firebase.auth.GoogleAuthProvider();
+
+    firebase.auth()
+    .signInWithPopup(provider)
+    .then((result) => {
+      /** @type {firebase.auth.OAuthCredential} */
+      var credential = result.credential;
+
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = credential.accessToken;
+      console.log(token);
+      // The signed-in user info.
+      var user = result.user;
+      console.log(user);
+      // ...
+    }).catch((error) => {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+      console.log(error);
+    });
+  }
+
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form className={classes.form} noValidate>
+
+          <Box m={2}>          
+              <GoogleButton fullWidth onClick={googleLoginRedirect}>
+                  Sign In with Google Account
+              </GoogleButton>
+          </Box>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <form className={classes.form} onSubmit={handleLogin} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -83,21 +176,21 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
           />
-          <FormControlLabel
+{/*           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          />
+          /> */}
           <Button
-            component={LinkRouter}
-            to={'home'}
             type="submit"
             fullWidth
             variant="contained"
-            color="primary"
+            color="green"
             className={classes.submit}
           >
             Sign In
           </Button>
+        </form>
+
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
@@ -110,11 +203,14 @@ export default function SignIn() {
               </Link>
             </Grid>
           </Grid>
-        </form>
+
       </div>
+
       <Box mt={8}>
         <Copyright />
       </Box>
     </Container>
   );
 }
+
+export default withRouter(SignIn)

@@ -1,17 +1,27 @@
 {
-  "name": "helloworld",
+  "name": "vitacoach",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.2",
+    "@material-ui/data-grid": "^4.0.0-alpha.27",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.58",
+    "@react-pdf/renderer": "^2.0.15",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.5.0",
+    "firebase": "^8.2.4",
+    "firebaseui": "^4.7.1",
+    "moment": "^2.29.1",
     "react": "^17.0.1",
+    "react-calendar": "^3.3.1",
     "react-dom": "^17.0.1",
+    "react-google-button": "^0.7.2",
+    "react-photo-gallery": "^8.0.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "react-step-wizard": "^5.3.6",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
