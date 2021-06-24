@@ -59,7 +59,6 @@ function Initialize(props)
               items.push({id:item.id,...item.data()});
             });
             setTopics(items);
-//            console.log(item);
         }catch(err){
           console.log(err);
         }
