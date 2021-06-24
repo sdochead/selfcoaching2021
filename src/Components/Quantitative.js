@@ -179,7 +179,7 @@ export default function Quantitative(props){
                       <DialogContent>
                           <form >
                               <Box m={1}>
-                                  <Typography>Metric Name:</Typography>
+                                  <Typography>Metric Name: </Typography>
                                   <Select id="my-input"  variant="outlined" native onChange={selectAddMetricDialogChangeView}>
 {/*                                       <option aria-label="None" value="" />                                
  */}                                      {
