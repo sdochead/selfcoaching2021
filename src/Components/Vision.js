@@ -11,10 +11,12 @@ import { DirectionsRun, Edit, Photo, Delete, Add, PhotoAlbum, PhotoAlbumRounded,
 import Textual from './Textual.js'
 import Visual from './Visual.js'
 import Quantitative from './Quantitative';
-import { blue } from '@material-ui/core/colors';
+import { blue, grey } from '@material-ui/core/colors';
 import StyledPaper from './StyledPaper';
 import Calendar from 'react-calendar';
 import VisionPDF from './VisionPDF';
+import PublishIcon from '@material-ui/icons/Publish';
+import { PictureAsPdf, PictureAsPdfOutlined, PictureAsPdfRounded, PictureAsPdfSharp } from '@material-ui/icons';
 
 
 const visionboardDefaultPlaceholder = 'https://www.emetabolic.com/media/pcon/vision-board-mrc-socialmedia-2089.jpg';
@@ -84,7 +86,10 @@ const useStyles = makeStyles((theme) => ({
     color : "white"
   },
   browseIcon:{
-    color : "white"
+    color : "white",
+    //background: grey[500]
+    //borderStyle: "dashed",
+    border:"white"
 },  
 
 }));
@@ -639,7 +644,7 @@ const updateImageURLDB=async(topic,url)=>{
                 actionIcon={
                     <div class="image-upload">
                         <label for={image.alt}>
-                          <PhotoAlbum className={classes.browseIcon} />
+                          <PublishIcon className={classes.browseIcon} />
                         </label>
                         <input id={image.alt} type="file" style={{display: "none"}}
                           onChange={(e)=>browseImage(e)}/>
@@ -671,11 +676,22 @@ const updateImageURLDB=async(topic,url)=>{
       </div>    
   )
 
+function pdfClick() {
+
+      history.push({
+        pathname: "/export",
+        state: { "year":maxYear,"vision": createVisionObject() }
+      });
+
+/*     <VisionPDF year={maxYear} vision={createVisionObject()} />
+ */
+}
+
 
 const VisionBoard = () => (
 
     <StyledPaper message={"Vision Board " + maxYear}
-         actionIcon={ <VisionPDF year={maxYear} vision={createVisionObject()} />}>
+         actionIcon={<IconButton onClick={pdfClick} style={{border: "2px solid white"}}><PictureAsPdf style={{color:"white"}}/></IconButton>}>
 
             {loadingPix
                   ? <CircularProgress /> 

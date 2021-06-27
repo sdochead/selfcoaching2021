@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { PDFViewer,PDFDownloadLink } from '@react-pdf/renderer';
 import ReactPDF from '@react-pdf/renderer';
 
-import { withRouter } from 'react-router-dom';
+import { useHistory, useLocation, withRouter } from 'react-router-dom';
 
 import { Document, Page, Text, View,Image, StyleSheet } from '@react-pdf/renderer';
-import { Button, CircularProgress, Fab, Icon, IconButton, Typography } from '@material-ui/core';
+import { Box, Button, Checkbox, CircularProgress, Fab, FormControlLabel, Icon, IconButton, Typography } from '@material-ui/core';
 import { orange } from '@material-ui/core/colors';
-import { PictureAsPdf, PictureAsPdfOutlined, PictureAsPdfRounded, PictureAsPdfSharp } from '@material-ui/icons';
+import {  PictureAsPdf, PictureAsPdfOutlined, PictureAsPdfRounded, PictureAsPdfSharp } from '@material-ui/icons';
+import StyledPaper from './StyledPaper';
 
 // Create styles
 const stylesXX = StyleSheet.create({
@@ -178,8 +179,46 @@ const styles = StyleSheet.create({
 export default function VisionPDF(props)
 {
 
+const location = useLocation();  
 //    const {year,topics,images,descs,metrics} = props;
-const {year,vision} = props;
+const {year,vision} = location.state;
+
+console.log("vision pdf");
+console.log("year",year);
+console.log("vision",vision);
+
+
+const [checkBoxes,setCheckBoxes]=useState([]);
+
+function populateCheckArray(){
+
+  var temp=[];
+  vision.forEach(element => {
+    temp.push({"id":element.topic,value:true});
+  });
+  setCheckBoxes(temp);
+
+}
+
+useEffect(()=>{
+  populateCheckArray();
+},[])
+
+function checkBoxClick(event){
+    console.log(event.target.id);
+    console.log(event.target.checked);
+
+    var temp=[];
+    checkBoxes.forEach(element => {
+        if(element.id===event.target.id){
+            element.value=event.target.checked;
+        }
+        temp.push(element);
+
+    });
+
+    setCheckBoxes(temp);
+}
 
 const D = () => (
     <Document>
@@ -233,7 +272,7 @@ const D = () => (
     </Document>
   );
 
-  const PicMosaic = () =>
+const PicMosaic = () =>
   (
     <View style={styles.table}> 
         <View style={styles.tableRow}> 
@@ -251,7 +290,9 @@ const D = () => (
 
   )
 
-    const VisionAsPDF = () => (
+const VisionAsPDF = (props) => {
+
+  return(
 
             <Document>
                 <Page style={styles.page}>
@@ -297,16 +338,31 @@ const D = () => (
             </Page>
 
         </Document> */
-);
+)
+}
 
     return(
+
+          <StyledPaper message="Customization">
+
+          <Box m={1}>
+              {
+                  checkBoxes.map((item,index)=>{
+                    return  <Box>
+                                <FormControlLabel control={<Checkbox checked={item.value} onChange={checkBoxClick} id={item.id}/>} label={item.id} />
+                            </Box>
+              })}
+          </Box>
 
              <PDFDownloadLink document={<VisionAsPDF />} style={styles.button} fileName="myvision.pdf">
                 {({ blob, url, loading, error }) =>
                     loading ? <CircularProgress /> :           
-                            <IconButton style={{border: "2px solid white"}}><PictureAsPdf style={{color:"white"}}/></IconButton>
+                            <Button variant="contained" color="primary"> Save As PDF </Button>
                 }
             </PDFDownloadLink> 
+          
+          </StyledPaper>
+
     );
 }
 
