@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import firebase from '../firebase';
 import { AuthContext } from "./Auth.js";
 import PropTypes from 'prop-types';
-import { AppBar, Avatar, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Fab, FormControl, FormControlLabel, FormLabel, Grid, GridList, GridListTile, GridListTileBar, IconButton, Input, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, ListSubheader, Paper, Radio, RadioGroup, Select, Slider, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
+import { AppBar, Avatar, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Fab, FormControl, FormControlLabel, FormLabel, Grid, GridList, GridListTile, GridListTileBar, Icon, IconButton, Input, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, ListSubheader, Paper, Radio, RadioGroup, Select, Slider, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import { useHistory, useLocation, withRouter } from 'react-router-dom';
 import { storage } from "../firebase";
 import Gallery from 'react-photo-gallery';
@@ -17,6 +17,7 @@ import Calendar from 'react-calendar';
 import VisionPDF from './VisionPDF';
 import PublishIcon from '@material-ui/icons/Publish';
 import { PictureAsPdf, PictureAsPdfOutlined, PictureAsPdfRounded, PictureAsPdfSharp } from '@material-ui/icons';
+import { Alert } from '@material-ui/lab';
 
 
 const visionboardDefaultPlaceholder = 'https://www.emetabolic.com/media/pcon/vision-board-mrc-socialmedia-2089.jpg';
@@ -664,10 +665,14 @@ const updateImageURLDB=async(topic,url)=>{
 {/*         <StyledPaper message={"Visual " + selectedTopic}>
               <Visual year={selectedYear} topic={selectedTopic} userID={currentUser.uid}/>
         </StyledPaper> */}
-        <StyledPaper  message={selectedTopic.toUpperCase() + " in words"}>
+        <StyledPaper  message={selectedTopic.toUpperCase() + " in words"}
+                      actionIcon={<Icon><img alt="" src={(images.find(item => item.alt===selectedTopic)).src} style={{width:"40px",height:"40px", marginTop:"10px", border: "0px solid white", borderRadius:'50%'}} /></Icon>}>
               <Textual year={selectedYear} topic={selectedTopic} user_ref={user_ref}/>
         </StyledPaper>
-        <StyledPaper message={selectedTopic.toUpperCase() + " in numbers"}>
+
+        <StyledPaper message={selectedTopic.toUpperCase() + " in numbers"}
+                      actionIcon={<Icon><img alt="" src={(images.find(item => item.alt===selectedTopic)).src} style={{width:"40px",height:"40px", marginTop:"10px", border: "0px solid white", borderRadius:'50%'}} /></Icon>}>
+
               <Quantitative year={selectedYear} topic={selectedTopic} 
                   userID={currentUser.uid} user_ref={user_ref}/>
         </StyledPaper>
@@ -700,9 +705,12 @@ const VisionBoard = () => (
                             <VisionPDF year={maxYear} vision={createVisionObject()} />
                         </Box> */}
                         <TopicsGallery />
+
                         { selectedTopic==="" 
                             ? <Box p={1}>
-                                  <Typography align="center">Click on images</Typography> 
+{/*                                   <Typography align="center">Click on images</Typography> 
+ */}
+                                      <Alert severity="info">Click on images for details.</Alert>
                               </Box>
                             : <Details />
                         }
