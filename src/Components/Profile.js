@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Avatar, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fab, FormControl, Grid, IconButton, InputLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Paper, Select, Tab, Tabs, TextField, Toolbar, Tooltip, Typography } from '@material-ui/core';
+import { AppBar, Avatar, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fab, FormControl, Grid, IconButton, InputLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Paper, Select, Snackbar, Tab, Tabs, TextField, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import { Add, Delete, Edit, Photo } from '@material-ui/icons';
 import firebase from '../firebase';
 import { useHistory, withRouter } from 'react-router-dom';
 import { AuthContext } from './Auth';
 import { DataGrid, GridAddIcon, GridFilterListIcon, GRID_ROW_SELECTED } from '@material-ui/data-grid';
+import { Alert } from '@material-ui/lab';
+import StyledPaper from './StyledPaper';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -69,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Profile = props => {
 
+
 const history = useHistory();
 const classes = useStyles();
 
@@ -93,8 +96,8 @@ return (
     <Identity classes={classes}/>
     <Metrics classes={classes}/>
 
-{/*     <Reset classes={classes}/>
- */}
+    <Reset classes={classes}/>
+ 
     </div>
 );
 }
@@ -139,17 +142,53 @@ function Reset(props){
         removeAllVisions();        
     }
 
+    function deleteMyAccount(){
+
+        if (window.confirm("You are deleting your account. This will erase all your information permanently. Are you sure?")) {
+        
+          const user_doc = firebase.firestore().collection("Users").doc(currentUser.uid);
+  
+          user_doc.collection("ExpectedMetrics").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data());
+                user_doc.collection("ExpectedMetrics").doc(doc.id).delete().then(() => {
+                  console.log("metric deleted!");                      
+              }).catch((error) => {
+                  console.error("Error removing metric: ", error);
+              });
+            });
+          });
+  
+          user_doc.delete().then(() => {
+              console.log("User main doc deleted!");    
+              signOut();           
+            }).catch((error) => {
+                console.error("Error removing User: ", error);
+            });       
+        }
+      }
+
+      function signOut(){
+        firebase.auth().signOut().then(() => {
+          console.log("user is out", "Success");
+          window.location = "./signin";
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+
 
     return (
 
         <Paper  id="metrics" className={classes.paper}>
             <AppBar p={1} position="static" className={classes.header}>   
-                <Typography p={1} >Reset </Typography>                  
+                <Typography p={1} >Delete</Typography>                  
             </AppBar>
             <Box p={2} display="flex" justifyContent="center">
                 <Button  color="primary" variant="contained"
-                        onClick={handleReset}>
-                        Clear My Visions
+                        onClick={deleteMyAccount}>
+                        Delete My Account
                 </Button>
             </Box>
 
@@ -168,7 +207,13 @@ function Identity(props){
     const [birthYear,setBirthYear]=useState();
     const [saved,setSaved] = useState(true);
 
+    const [openUpdateSuccessSnack, setOpenUpdateSuccessSnack] = useState(false);
+
     const user_ref=firebase.firestore().collection("Users").doc(currentUser.uid); 
+
+    function handleClose(){
+        setOpenUpdateSuccessSnack(false);
+    }
 
     useEffect(() => {
         fetchProfileDB();
@@ -183,6 +228,7 @@ function Identity(props){
             //            changeInTopic();
                         console.log("profile is updated", profileName);
                         setSaved(true);
+                        setOpenUpdateSuccessSnack(true);
                     });
     
             }catch(err){
@@ -225,10 +271,7 @@ function Identity(props){
 
     return(
 
-        <Paper  id="profile" className={classes.paper}>
-        <AppBar p={1} position="static" className={classes.header}>   
-            <Typography p={1} >Profile </Typography>                  
-        </AppBar>
+        <StyledPaper message="Profile">
 
 
         <Grid container item xs={12} alignItems="center" spacing={1}>
@@ -270,8 +313,13 @@ function Identity(props){
                 </Grid>
         </Grid>
 
+            <Snackbar open={openUpdateSuccessSnack} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success">
+                    Your profile is updated.
+                </Alert>
+            </Snackbar>
 
-        </Paper>
+        </StyledPaper>
 
       )
 }

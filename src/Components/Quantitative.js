@@ -10,6 +10,7 @@ import Gallery from 'react-photo-gallery';
 import { DirectionsRun, Edit, Photo, Delete, Add } from '@material-ui/icons';
 import Textual from './Textual.js'
 import Visual from './Visual.js'
+import { Alert } from '@material-ui/lab';
 
 
 export default function Quantitative(props){
@@ -21,6 +22,7 @@ export default function Quantitative(props){
     const [selectedMetricNameDialog,setSelectedMetricNameDialog]=useState("");
     const [selectedMetricValueDialog,setSelectedMetricValueDialog]=useState(0);
     const [unit,setUnit] =useState("unit");
+    const [url,setUrl] =useState("");
 
   
     const metrics_expected_ref = user_ref.collection("ExpectedMetrics"); 
@@ -49,7 +51,6 @@ export default function Quantitative(props){
           console.log(err);
         }
   }
-  
   const fetchMetricsDefinitionDB=async()=>{
     try {
           console.log("fetch topics started");
@@ -68,9 +69,9 @@ export default function Quantitative(props){
   const addMetric2VisionDB=async(metricName,metricValue)=>
   {
     try{
-          metrics_expected_ref.add(
-            {"topic":topic,"name":metricName,"value":metricValue}
-            ,{ merge: true }); 
+          var entry = {"topic":topic,"name":metricName,"value":metricValue,"url":url};
+          console.log(entry);     
+          metrics_expected_ref.add(entry,{ merge: true }); 
           console.log("metric added to vision");     
     }catch(err){
       console.log("errrror: metric not added to vision");     
@@ -84,10 +85,14 @@ export default function Quantitative(props){
     console.log("selected metric name", selectedMetricNameDialog);
     console.log("selected metric value", selectedMetricValueDialog);
   
-    if(selectedMetricNameDialog==="")console.log("metric name is empty");
+    if(selectedMetricNameDialog===""){
+      console.log("metric name is empty");
+    }
     else{
       addMetric2VisionDB(selectedMetricNameDialog,selectedMetricValueDialog);
       fetchExpectedMetricsDB();
+      closeMetricDialogView();
+
   /*     if(selectedMetrics===undefined){
         setSelectedMetrics({name:selectedMetricNameDialog,value:selectedMetricValueDialog});  
       }else{
@@ -95,13 +100,14 @@ export default function Quantitative(props){
         setSelectedMetrics(newList);
       }  */         
     }
-    closeMetricDialogView();
   }
   function metricValueChangeView(event)
   {
     setSelectedMetricValueDialog(event.target.value);
   }
   function openAddMetricDialogView(){
+      setSelectedMetricNameDialog("");
+      setSelectedMetricValueDialog(0);
       setOpenMetricDialog(true);
   }
    function cancelAddMetricDialogView(){
@@ -109,15 +115,23 @@ export default function Quantitative(props){
   }
   function selectAddMetricDialogChangeView(event){
       setSelectedMetricNameDialog(event.target.value);
-      console.log("metric dialog" , getUnit(metricDefintions,event.target.value));
-      setUnit(getUnit(metricDefintions,event.target.value));
+      var uu = getUnitAndUrl(metricDefintions,event.target.value);
+      console.log("metric dialog" , uu);
+      setUnit(uu.unit);
+      setUrl(uu.url);
   }
-  function getUnit(definitions,value){
+  function getUnitAndUrl(definitions,value){
       for (let index = 0; index < definitions.length; index++) {
         const element = definitions[index];
-        if(element.id===value) return element.unit;      
+        if(element.id===value) return {unit:element.unit,url:element.url};      
       }
   }
+  function getUnitX01(definitions,value){
+    for (let index = 0; index < definitions.length; index++) {
+      const element = definitions[index];
+      if(element.id===value) return element.unit;      
+    }
+}  
   const closeMetricDialogView = () => {
     setOpenMetricDialog(false);
   };
@@ -150,7 +164,10 @@ export default function Quantitative(props){
                                   <ListItem>
                                         <ListItemAvatar>
                                             <Avatar>
-                                                <Photo />
+                                              {metric.url===undefined
+                                                ? <Photo />
+                                                : <img src={metric.url} alt={metric.name} />
+                                              }
                                             </Avatar>
                                         </ListItemAvatar>
                                         <ListItemText primary={metric.name} secondary={metric.value}/>
@@ -178,20 +195,27 @@ export default function Quantitative(props){
                       <DialogTitle>{topic.toUpperCase()} Metrics</DialogTitle>
                       <DialogContent>
                           <form >
-                              <Box m={1}>
-                                  <Typography>Metric Name: </Typography>
-                                  <Select id="my-input"  variant="outlined" native onChange={selectAddMetricDialogChangeView}>
-{/*                                       <option aria-label="None" value="" />                                
- */}                                      {
-                                          metricDefintions.map((item,index)=>
-                                              <option value={item.id}>{item.id}</option>)
-                                      }
-                                  </Select>
+                              <Box m={1} display='flex' alignItems="left">
+                                  <Box>
+                                    <Typography>Metric Name: </Typography>
+                                    <Select id="my-input"  variant="outlined" native onChange={selectAddMetricDialogChangeView}>
+                                        <option aria-label="None" value="" />                                
+                                        {
+                                            metricDefintions.map((item,index)=>
+                                                <option value={item.id}>{item.id}</option>)
+                                        }
+                                    </Select>
+                                  </Box>
+                                  <Box pl={2} pt={4}>
+                                      <Avatar>
+                                          <img src={url} width={50} height={50} alt={selectedMetricNameDialog} />
+                                      </Avatar>
+                                  </Box>
                               </Box>
                               <Box m={1}>
                                   <FormControl>
                                       <Typography>Target Value:</Typography>
-                                      <TextField type="number" variant="outlined" defaultValue={"0"} id="desiredValue"
+                                      <TextField disabled={selectedMetricNameDialog==="" ? true : false} type="number" variant="outlined" defaultValue={"0"} id="desiredValue"
                                         aria-describedby="my-helper-text" onChange={metricValueChangeView} />
                                       <FormHelperText id="my-helper-text">Target value shall be a number.</FormHelperText>
                                   </FormControl>

@@ -81,7 +81,7 @@ function exportPdf(){
 
 
     <Box p={2}>
-        <img src="xsmap.jpg" alt='Map' style={{height:'auto',width:'100%', borderRadius:'50%'}}/>
+        <img src={maxYear===0 ? "start-vision-600.jpg" : "xsmap.jpg"}  alt='Map' style={{height:'auto',width:'100%', borderRadius:'50%'}}/>
         <Box p={2}>
           {loading===true 
           ?     <CircularProgress />
@@ -94,9 +94,6 @@ function exportPdf(){
                       {maxYear===0 ? "Start New Vision" : "Open Existing Vision"}
                   </Button>
               </Box>                  
-{/*               <Box  p={1} display="flex" justifyContent="center">
-                  <VisionPDF />
-              </Box> */}
           </>
           }
         </Box>

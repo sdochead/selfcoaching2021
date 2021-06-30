@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Avatar, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fab, FormControl, Grid, IconButton, InputLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Paper, Select, Tab, Tabs, TextField, Toolbar, Tooltip, Typography } from '@material-ui/core';
+import { AppBar, Avatar, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fab, FormControl, Grid, IconButton, InputLabel, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Paper, Select, Snackbar, Tab, Tabs, TextField, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import { Add, Delete, Edit, Photo } from '@material-ui/icons';
 import firebase from '../firebase';
 import { withRouter } from 'react-router-dom';
 import { AuthContext } from './Auth';
 import { DataGrid, GridAddIcon, GridFilterListIcon, GRID_ROW_SELECTED } from '@material-ui/data-grid';
+import { Alert } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -410,7 +411,14 @@ function Profile(props){
     const [profileName,setProfileName]=useState();
     const [birthYear,setBirthYear]=useState();
 
+    const [openUpdateSuccessSnack, setOpenUpdateSuccessSnack] = useState(false);
+
     const user_ref=firebase.firestore().collection("Users").doc(currentUser.uid); 
+
+
+    function handleClose(){
+        setOpenUpdateSuccessSnack(false);
+    }
 
     useEffect(() => {
         fetchProfileDB();
@@ -424,10 +432,11 @@ function Profile(props){
                     {"name":profileName,"birthYear":birthYear}).then(()=>{
             //            changeInTopic();
                         console.log("profile is updated", profileName);
+                        setOpenUpdateSuccessSnack(true);
                     });
     
             }catch(err){
-            console.log(err);
+                console.log(err);
             }
     } 
 
@@ -453,54 +462,62 @@ function Profile(props){
     }
   
     return(
+        <>
 
-        <Paper  id="profile" className={classes.paper}>
-        <AppBar p={1} position="static" className={classes.header}>   
-            <Typography p={1} >Profile </Typography>                  
-        </AppBar>
+            <Paper  id="profile" className={classes.paper}>
+                <AppBar p={1} position="static" className={classes.header}>   
+                    <Typography p={1} >Profile </Typography>                  
+                </AppBar>
 
 
-        <Grid container item xs={12} alignItems="center" spacing={1}>
-            <Grid item xs={1}>
-                    <Box/>
-            </Grid>
-            <Grid item xs={4}>
-                    <Typography>Username:</Typography>
-            </Grid>
-            <Grid item xs={6}>
-                <TextField variant="outlined" margin="normal" required fullWidth
-                    value={profileName} onChange={(e)=>setProfileName(e.target.value)} autoFocus/>
-            </Grid>
-            <Grid item xs={1}>
-                    <Box/>
-            </Grid>
-        </Grid>
-        <Grid container item xs={12} alignItems="center" spacing={1}>
-            <Grid item xs={1}>
-                    <Box/>
-            </Grid>
-            <Grid item xs={4}>
-                    <Typography>Year of Birth:</Typography>
-            </Grid>
-            <Grid item xs={6}>
-                <TextField variant="outlined" margin="normal" fullWidth
-                    value={birthYear} onChange={(e)=>setBirthYear(e.target.value)}/>
-            </Grid>
-            <Grid item xs={1}>
-                    <Box/>
-            </Grid>
-        </Grid>            
-        <Grid container xs={12} justify="center" >
-                <Grid item xs={3} className={classes.content}>
-                    <Button variant="contained" fullWidth
-                        color="primary" onClick={updateProfileDB}>
-                            Save
-                    </Button>
+                <Grid container item xs={12} alignItems="center" spacing={1}>
+                    <Grid item xs={1}>
+                            <Box/>
+                    </Grid>
+                    <Grid item xs={4}>
+                            <Typography>Username:</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField variant="outlined" margin="normal" required fullWidth
+                            value={profileName} onChange={(e)=>setProfileName(e.target.value)} autoFocus/>
+                    </Grid>
+                    <Grid item xs={1}>
+                            <Box/>
+                    </Grid>
                 </Grid>
-        </Grid>
+                <Grid container item xs={12} alignItems="center" spacing={1}>
+                    <Grid item xs={1}>
+                            <Box/>
+                    </Grid>
+                    <Grid item xs={4}>
+                            <Typography>Year of Birth:</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField variant="outlined" margin="normal" fullWidth
+                            value={birthYear} onChange={(e)=>setBirthYear(e.target.value)}/>
+                    </Grid>
+                    <Grid item xs={1}>
+                            <Box/>
+                    </Grid>
+                </Grid>            
+                <Grid container xs={12} justify="center" >
+                        <Grid item xs={3} className={classes.content}>
+                            <Button variant="contained" fullWidth
+                                color="primary" onClick={updateProfileDB}>
+                                    Save
+                            </Button>
+                        </Grid>
+                </Grid>
 
 
-        </Paper>
+            </Paper>
 
+            <Snackbar open={openUpdateSuccessSnack} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success">
+                    Your profile is updated.
+                </Alert>
+            </Snackbar>
+
+        </>
       )
 }

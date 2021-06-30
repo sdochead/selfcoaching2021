@@ -222,11 +222,7 @@ const useStyles = makeStyles((theme) => ({
 {/*             <ListItem button key="Profile" onClick={openSetting}>
               <ListItemIcon>{<PersonIcon />}</ListItemIcon>
               <ListItemText primary='Profile' />
-            </ListItem> */}
-            <ListItem key="Profile" component={Link} to="/profile" onClick={openProfile}>
-              <ListItemIcon>{<PersonIcon />}</ListItemIcon>
-              <ListItemText primary='Profile' />
-            </ListItem>            
+            </ListItem> */}           
 {/*             <ListItem button key="dream" onClick={openDream}>
               <ListItemIcon>{<SettingsIcon />}</ListItemIcon>
               <ListItemText primary='Start A Dream' />
@@ -263,14 +259,26 @@ const useStyles = makeStyles((theme) => ({
         </List>
         <Divider />
         <List>
+            {role==="admin"
+              ?
+                <ListItem key="Admin" component={Link} to="/admin" onClick={openProfile}>
+                    <ListItemIcon>{<PersonIcon />}</ListItemIcon>
+                    <ListItemText primary='Admin' />
+                </ListItem> 
+              :
+                <ListItem key="Profile" component={Link} to="/profile" onClick={openProfile}>
+                      <ListItemIcon>{<PersonIcon />}</ListItemIcon>
+                      <ListItemText primary='Profile' />
+                </ListItem> 
+            }          
             <ListItem button key="Sign Out" onClick={signOut}>
               <ListItemIcon>{<ExitToApp />}</ListItemIcon>
               <ListItemText primary='Signout' />
             </ListItem>
-            <ListItem button key="delete" onClick={deleteMyAccount}>
+{/*             <ListItem button key="delete" onClick={deleteMyAccount}>
               <ListItemIcon>{<Delete />}</ListItemIcon>
               <ListItemText primary='Delete My Account' />
-            </ListItem> 
+            </ListItem>  */}
         </List>        
       </Drawer> 
     </div>        

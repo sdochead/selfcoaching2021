@@ -28,6 +28,7 @@ import HelpVisionBoard from './HelpVisionBoard';
 import PrivateRoute from './PrivateRoute';
 import Content from './Content';
 import VisionPDF from './VisionPDF';
+import AdminDashboard from './AdminDashboard';
 
 function Home(props) {
     
@@ -110,6 +111,7 @@ function Home(props) {
                       <Route  path="/"><Einstein /></Route>
                       <Route exact path="/dream"><Dream /></Route> */}
                       <PrivateRoute exact path="/profile"><Profile /></PrivateRoute>
+                      <PrivateRoute exact path="/admin"><AdminDashboard /></PrivateRoute>
                       <PrivateRoute exact path="/content"><Content/></PrivateRoute>
                       <PrivateRoute exact path="/vision"><Vision /></PrivateRoute>
                       <PrivateRoute exact path="/export"><VisionPDF /></PrivateRoute>
