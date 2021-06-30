@@ -629,12 +629,12 @@ const updateImageURLDB=async(topic,url)=>{
   const TopicsGallery = () =>
   (
     <div id="gallery-placeholder">
-        <GridList cellHeight={150} className={classes.gridList} cols={2} autoFocus>
+        <GridList cellHeight={150} cols={2} autoFocus>
             {images.map((image) => (
-            <GridListTile key={image.key} cols={1}>
+            <GridListTile key={image.key} cols={1}
+                style={selectedTopic===image.alt ? {border: '2px solid #021a40', borderRadius: "5px"}: {}}>
               <img src={image.src} alt={image.alt}
               onClick={galleryClickView}
-              style={selectedTopic===image.alt ? {border: '1px solid #021a40' }: {}}
               />
               <GridListTileBar
                 title={image.alt.toUpperCase()}
