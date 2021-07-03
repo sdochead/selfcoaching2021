@@ -14,13 +14,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { withRouter } from 'react-router';
 import firebase from '../firebase';
+import GoogleButton from 'react-google-button';
+import { Paper } from '@material-ui/core';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        Personal Map of Life
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -31,6 +33,11 @@ function Copyright() {
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  box: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -91,102 +98,119 @@ function SignUp({history}) {
     }, [history]);  
 
 
+    function googleLoginRedirect() {
+      // [START auth_google_signin_redirect_result]
+      var provider = new firebase.auth.GoogleAuthProvider();
+  
+      firebase.auth().signInWithRedirect(provider);
+  
+      firebase.auth()
+        .getRedirectResult()
+        .then((result) => {
+          if (result.credential) {
+            /** @type {firebase.auth.OAuthCredential} */
+            var credential = result.credential;
+    
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            var token = credential.accessToken;
+            console.log(token);
+          }
+          // The signed-in user info.
+          var user = result.user;
+        }).catch((error) => {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          console.log(error);
+        });
+      // [END auth_google_signin_redirect_result]
+    }
+   
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
-        <form className={classes.form} onSubmit={handleSignUp} noValidate>
-          <Grid container spacing={2}>
-{/*             <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
-              />
-            </Grid>
- */}            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="New Password"
-                type="password"
-                id="password"
-                //autoComplete="current-password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="repeat password"
-                label="Repeat Password"
-                type="password"
-                id="repeat password"
-                //autoComplete="current-password"
-              />
-            </Grid>            
-{/*             <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
-              />
-            </Grid> */}
-          </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign Up
-          </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link href={'./signin'} variant="body2">
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
+      
+      <Paper className={classes.paper}>
+        <Box p={2} className={classes.box}>
+            <Avatar className={classes.avatar}>
+                <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+                Sign Up
+            </Typography>
+        </Box>
+            <Box m={2}>          
+                <GoogleButton label="Sign Up with Google Account" fullWidth onClick={googleLoginRedirect} />
+            </Box>
+            <Typography variant="body1">
+                or
+            </Typography>
+            <Box p={3} className={classes.box}>
+                <Typography component="h1" variant="h6">
+                  Create A New Account
+                </Typography>
+                <form className={classes.form} onSubmit={handleSignUp} noValidate>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <TextField
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        variant="outlined"
+                        required
+                        fullWidth
+                        name="password"
+                        label="New Password"
+                        type="password"
+                        id="password"
+                        //autoComplete="current-password"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        variant="outlined"
+                        required
+                        fullWidth
+                        name="repeat password"
+                        label="Repeat Password"
+                        type="password"
+                        id="repeat password"
+                        //autoComplete="current-password"
+                      />
+                    </Grid>
+                  </Grid>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                  >
+                    Sign Up
+                  </Button>
+                  <Grid container justify="flex-end">
+                    <Grid item>
+                      <Link href={'./signin'} variant="body2">
+                        Already have an account? Sign in
+                      </Link>
+                    </Grid>
+                  </Grid>
+                </form>
+            </Box>
+        </Paper>
       <Box mt={5}>
         <Copyright />
       </Box>

@@ -17,6 +17,7 @@ import {Redirect,withRouter} from 'react-router';
 import firebase from '../firebase';
 import StyledPaper from '../Components/StyledPaper.js';
 import GoogleButton from 'react-google-button'
+import { Paper } from '@material-ui/core';
 
 function Copyright() {
   return (
@@ -38,6 +39,11 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
+  },
+  box: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -140,71 +146,81 @@ function SignIn({history}) {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.paper}>
 
-          <Box m={2}>          
-              <GoogleButton fullWidth onClick={googleLoginRedirect}>
-                  Sign In with Google Account
-              </GoogleButton>
+      <Paper className={classes.paper}>
+          <Box p={2} className={classes.box}>
+              <Avatar className={classes.avatar}>
+                  <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                  Sign In
+              </Typography>
           </Box>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
+          <Box m={2}>          
+                <GoogleButton fullWidth onClick={googleLoginRedirect}>
+                    Sign In with Google Account
+                </GoogleButton>
+          </Box>
+          <Typography variant="body1">
+                  or
           </Typography>
-          <form className={classes.form} onSubmit={handleLogin} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-{/*           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          /> */}
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="green"
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
-        </form>
+          <Box p={3} className={classes.box}>
+              <Typography component="h2" variant="h6">
+                  Use Your Existing Account
+              </Typography>
 
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href={'./signup'} variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
+              <form className={classes.form} onSubmit={handleLogin} noValidate>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+  {/*           <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            /> */}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="green"
+              className={classes.submit}
+            >
+              Sign In
+            </Button>
+          </form>
 
-      </div>
+              <Grid container>
+              <Grid item xs>
+                <Link href="./forgotpassword" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href={'./signup'} variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+      </Paper>
 
       <Box mt={8}>
         <Copyright />

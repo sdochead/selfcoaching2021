@@ -2,11 +2,11 @@ import React from 'react';
 import {  BrowserRouter as Router,  Route,  Switch} from 'react-router-dom';
 import SignIn from './templates/SignIn';
 import SignUp from './templates/SignUp';
+import ForgotPassword from './templates/ForgotPassword';
 import Home from './Components/Home';
 import PrivateRoute from './Components/PrivateRoute';
 import Container from '@material-ui/core/Container';
 import { AuthProvider } from './Components/Auth';
-import Landing from './Landing';
 
 
 
@@ -25,6 +25,7 @@ export default function App() {
                 <PrivateRoute exact path="/"><Home /></PrivateRoute>    
                 <Route exact path="/signin"><SignIn /></Route>
                 <Route exact path="/signup"><SignUp /></Route>
+                <Route exact path="/forgotpassword"><ForgotPassword /></Route>
 
             </Switch>
         </Router>
