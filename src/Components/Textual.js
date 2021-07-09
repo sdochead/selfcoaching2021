@@ -11,7 +11,7 @@ import { DirectionsRun, Edit, Photo, Delete, Add } from '@material-ui/icons';
 
 
 export default function Textual(props){
-    const {year,topic,user_ref}=props;
+    const {topic,user_ref}=props;
     const [desc,setDesc] =useState("");
     const [saved,setSaved]=useState(true);
   

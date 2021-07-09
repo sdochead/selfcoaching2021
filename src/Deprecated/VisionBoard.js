@@ -1,17 +1,15 @@
 import React,{useState,useEffect,useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import firebase from '../firebase';
-import { AuthContext } from "./Auth.js";
+import { AuthContext } from "../Components/Auth.js";
 import PropTypes from 'prop-types';
-import { AppBar, Avatar, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Fab, FormControl, FormControlLabel, Grid, GridList, GridListTile, GridListTileBar, IconButton, Input, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, ListSubheader, Paper, Select, Slider, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
+import { AppBar, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Fab, FormControl, FormControlLabel, Grid, GridList, GridListTile, GridListTileBar, IconButton, Input, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, ListSubheader, Paper, Select, Slider, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { storage } from "../firebase";
 import Gallery from 'react-photo-gallery';
 import { DirectionsRun, Edit, Photo, Delete, Add } from '@material-ui/icons';
-import Textual from './Textual.js'
-import Visual from './Visual.js'
-import Quantitative from './Quantitative';
-
+import Textual from '../Components/Textual.js'
+import Quantitative from '../Components/Quantitative';
 
 const visionboardDefaultPlaceholder = 'https://www.emetabolic.com/media/pcon/vision-board-mrc-socialmedia-2089.jpg';
 const minYear = 2021;
@@ -515,11 +513,9 @@ const VisionBoard = props => {
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
                             <Textual year={selectedYear} topic={selectedTopic} userID={currentUser.uid}/>
-
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
                             <Quantitative year={selectedYear} topic={selectedTopic} userID={currentUser.uid}/>
-    
                         </TabPanel>
 
                       <div>

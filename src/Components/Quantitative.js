@@ -9,12 +9,12 @@ import { storage } from "../firebase";
 import Gallery from 'react-photo-gallery';
 import { DirectionsRun, Edit, Photo, Delete, Add } from '@material-ui/icons';
 import Textual from './Textual.js'
-import Visual from './Visual.js'
+import Visual from '../Deprecated/Visual.js'
 import { Alert } from '@material-ui/lab';
 
 
 export default function Quantitative(props){
-    const {year,topic,userID,user_ref}=props;
+    const {topic,userID,user_ref}=props;
     const [metricDefintions,setMetricDefinitions] =useState([]);
   
     const [metrics,setMetrics] =useState([]);
@@ -69,7 +69,7 @@ export default function Quantitative(props){
   const addMetric2VisionDB=async(metricName,metricValue)=>
   {
     try{
-          var entry = {"topic":topic,"name":metricName,"value":metricValue,"url":url};
+          var entry = {"topic":topic,"name":metricName,"value":metricValue,"unit":unit,"url":(url===undefined ? "" : url)};
           console.log(entry);     
           metrics_expected_ref.add(entry,{ merge: true }); 
           console.log("metric added to vision");     
@@ -161,7 +161,7 @@ export default function Quantitative(props){
                   (metrics.length===0 ? console.log("selectedMetrics has no item"):
                   metrics.map((metric,index) => {
                       return (
-                                  <ListItem>
+                                  <ListItem id={index} >
                                         <ListItemAvatar>
                                             <Avatar>
                                               {metric.url===undefined
@@ -170,7 +170,7 @@ export default function Quantitative(props){
                                               }
                                             </Avatar>
                                         </ListItemAvatar>
-                                        <ListItemText primary={metric.name} secondary={metric.value}/>
+                                        <ListItemText primary={metric.name} secondary={metric.value+" "+metric.unit}/>
                                         <ListItemSecondaryAction>
                                             <IconButton id={metric.name} edge="end" aria-label="delete" onClick={()=>deleteMetricClick(metric.id)}>
                                                 <Delete />

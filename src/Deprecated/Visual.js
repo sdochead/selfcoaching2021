@@ -1,14 +1,14 @@
 import React,{useState,useEffect,useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import firebase from '../firebase';
-import { AuthContext } from "./Auth.js";
+import { AuthContext } from "../Components/Auth.js";
 import PropTypes from 'prop-types';
 import { AppBar, Avatar, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Fab, FormControl, FormControlLabel, Grid, GridList, GridListTile, GridListTileBar, IconButton, Input, InputBase, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, ListSubheader, Paper, Select, Slider, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { storage } from "../firebase";
 import Gallery from 'react-photo-gallery';
 import { DirectionsRun, Edit, Photo, Delete, Add, FormatAlignJustify } from '@material-ui/icons';
-import Textual from './Textual.js'
+import Textual from '../Components/Textual.js'
 import { Alert, AlertTitle } from '@material-ui/lab';
 
 

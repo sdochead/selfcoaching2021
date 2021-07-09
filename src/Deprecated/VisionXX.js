@@ -1,18 +1,18 @@
 import React,{useState,useEffect,useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import firebase from '../firebase';
-import { AuthContext } from "./Auth.js";
+import { AuthContext } from "../Components/Auth.js";
 import PropTypes from 'prop-types';
 import { AppBar, Avatar, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Fab, FormControl, FormControlLabel, FormLabel, Grid, GridList, GridListTile, GridListTileBar, IconButton, Input, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, ListSubheader, Paper, Radio, RadioGroup, Select, Slider, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import { useLocation, withRouter } from 'react-router-dom';
 import { storage } from "../firebase";
 import Gallery from 'react-photo-gallery';
 import { DirectionsRun, Edit, Photo, Delete, Add, PhotoAlbum, PhotoAlbumRounded, PhotoAlbumOutlined, PhotoAlbumTwoTone, FormatUnderlined } from '@material-ui/icons';
-import Textual from './Textual.js'
+import Textual from '../Components/Textual.js'
 import Visual from './Visual.js'
-import Quantitative from './Quantitative';
+import Quantitative from '../Components/Quantitative';
 import { blue } from '@material-ui/core/colors';
-import StyledPaper from './StyledPaper';
+import StyledPaper from '../Components/StyledPaper';
 import Calendar from 'react-calendar';
 
 

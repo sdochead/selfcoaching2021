@@ -4,16 +4,16 @@ import { AppBar, Avatar, Box, Button, Checkbox, Dialog, DialogActions, DialogCon
 import { Add, Delete, Edit, Photo } from '@material-ui/icons';
 import firebase from '../firebase';
 import { withRouter } from 'react-router-dom';
-import { AuthContext } from './Auth';
+import { AuthContext } from '../Components/Auth';
 import { DataGrid, GridAddIcon, GridFilterListIcon, GRID_ROW_SELECTED } from '@material-ui/data-grid';
-import Textual from './Textual.js'
+import Textual from '../Components/Textual.js'
 import Visual from './Visual.js'
 import { storage } from "../firebase";
 
 
 import StepWizard from "react-step-wizard";
 import Calendar from 'react-calendar';
-import Quantitative from './Quantitative';
+import Quantitative from '../Components/Quantitative';
 
 const useStyles = makeStyles((theme) => ({
     root: {

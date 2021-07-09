@@ -11,28 +11,6 @@ import { orange } from '@material-ui/core/colors';
 import {  PictureAsPdf, PictureAsPdfOutlined, PictureAsPdfRounded, PictureAsPdfSharp } from '@material-ui/icons';
 import StyledPaper from './StyledPaper';
 
-// Create styles
-const stylesXX = StyleSheet.create({
-  page: {
-    flexDirection: 'row',
-    backgroundColor: '#E4E4E4'
-  },
-  sectionOdd: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1,
-    backgroundColor: '#ccff33'
-  },
-  sectionEven: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1,
-    backgroundColor: '#ffccff'
-  },
-  button:{
-    textDecoration:'none'
-  }
-});
 
 const styles = StyleSheet.create({
     page: {
@@ -174,8 +152,6 @@ const styles = StyleSheet.create({
   
 });
 
-
-
 export default function VisionPDF(props)
 {
 
@@ -186,8 +162,6 @@ const {year,vision} = location.state;
 console.log("vision pdf");
 console.log("year",year);
 console.log("vision",vision);
-
-
 const [checkBoxes,setCheckBoxes]=useState([]);
 
 function populateCheckArray(){
@@ -220,57 +194,13 @@ function checkBoxClick(event){
     setCheckBoxes(temp);
 }
 
-const D = () => (
-    <Document>
-      <Page style={styles.body}>
-        <View style={styles.table}> 
-          <View style={styles.tableRow}> 
-            <View style={styles.tableColHeader}> 
-              <Text style={styles.tableCellHeader}>Product</Text> 
-            </View> 
-            <View style={styles.tableColHeader}> 
-              <Text style={styles.tableCellHeader}>Type</Text> 
-            </View> 
-            <View style={styles.tableColHeader}> 
-              <Text style={styles.tableCellHeader}>Period</Text> 
-            </View> 
-            <View style={styles.tableColHeader}> 
-              <Text style={styles.tableCellHeader}>Price</Text> 
-            </View> 
-          </View>
-          <View style={styles.tableRow}> 
-            <View style={styles.tableCol}> 
-              <Text style={styles.tableCell}>React-PDF</Text> 
-            </View> 
-            <View style={styles.tableCol}> 
-              <Text style={styles.tableCell}>3</Text> 
-            </View> 
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>2019-02-20 - 2020-02-19</Text> 
-            </View>
-            <View style={styles.tableCol}> 
-              <Text style={styles.tableCell}>5€</Text> 
-            </View> 
-          </View> 
-          <View style={styles.tableRow}> 
-            <View style={styles.tableCol}> 
-              <Text style={styles.tableCell}>Another row</Text> 
-            </View> 
-            <View style={styles.tableCol}> 
-              <Text style={styles.tableCell}>Capítulo I: Que trata de la condición y ejercicio del famoso hidalgo D.
-          Quijote de la Mancha</Text> 
-            </View> 
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>2019-05-20 - 2020-07-19</Text> 
-            </View>
-            <View style={styles.tableCol}> 
-              <Text style={styles.tableCell}>25€</Text> 
-            </View> 
-          </View>        
-        </View>
-      </Page>
-    </Document>
-  );
+function isChecked(topic){
+  for (let index = 0; index < checkBoxes.length; index++) {
+    if(topic === checkBoxes[index].id)
+      return checkBoxes[index].value;
+   }
+   return false;
+}
 
 const PicMosaic = () =>
   (
@@ -278,11 +208,11 @@ const PicMosaic = () =>
         <View style={styles.tableRow}> 
             {vision&&
                 vision.map((item,index) => {
-                    return (
-                            <View key={index} style={styles.tableColHeader}> 
-                                <Image  style={styles.body}  source={item.image}/> 
-                            </View> 
-                    )
+                    return (isChecked(item.topic)
+                            ? <View key={index} style={styles.tableColHeader}> 
+                                 <Image  style={styles.body} source={item.image}/> 
+                              </View>
+                            : null)
                 })
             }
         </View>
@@ -291,77 +221,64 @@ const PicMosaic = () =>
   )
 
 const VisionAsPDF = (props) => {
-
   return(
-
-            <Document>
-                <Page style={styles.page}>
-
-                    <View style={styles.header}>
-                        <Text style={styles.title}> Vision Board for {year}</Text>
-                    </View>
-
-                    <PicMosaic />
-
-                    {vision
-                        ? vision.map((item, index) => {
-                                return (
-                                    <View style={index%2===1 ? styles.sectionOdd : styles.sectionEven}>
-                                        <View key={"text"+index} style={styles.topicContainer}>
-                                            <Text style={styles.title}>{(index+1)+". "+item.topic}</Text>
-                                        </View>
-                                        <View key={"image"+index} style={styles.overviewContainer}>
-                                            <Image
-                                                style={styles.image}
-                                                source={item.image}
-                                            /> 
-                                            <View style={styles.overviewContainer}>
-                                                <Text style={styles.overview}>Description: {item.desc}</Text>
-                                            </View>
-                                        </View>
-                                    </View>
-                                );
-                            })
-                        : null
-                    }
-                </Page>
-            </Document>
-       
-/*         <Document>
-            <Page size="A4" style={styles.page}>
-            <View style={styles.section}>
-                <Text>Section #1</Text>
-            </View>
-            <View style={styles.section}>
-                <Text>Section #2</Text>
-            </View>
+        <Document>
+            <Page style={styles.page}>
+                <View style={styles.header}>
+                    <Text style={styles.title}> Vision Board for {year}</Text>
+                </View>
+                <PicMosaic />
+                {vision
+                    ? vision.map((item, index) => {
+                            return (
+                                <View style={index%2===1 ? styles.sectionOdd : styles.sectionEven}>
+                                  {isChecked(item.topic)
+                                  ? <div>
+                                      <View key={"text"+index} style={styles.topicContainer}>
+                                          <Text style={styles.title}>{item.topic}</Text>
+                                      </View>
+                                      <View key={"image"+index} style={styles.overviewContainer}>
+                                          <Image
+                                              style={styles.image}
+                                              source={item.image}
+                                          /> 
+                                          <View style={styles.overviewContainer}>
+                                              <Text style={styles.overview}>Description: {item.desc}</Text>
+                                          </View>
+                                      </View>
+                                    </div>
+                                    : null
+                                  }
+                                </View>
+                            );
+                        })
+                    : null
+                }
             </Page>
-
-        </Document> */
-)
+        </Document>
+       
+  )
 }
 
-    return(
-
-          <StyledPaper message="Customization">
-
-          <Box m={1}>
-              {
-                  checkBoxes.map((item,index)=>{
-                    return  <Box>
-                                <FormControlLabel control={<Checkbox checked={item.value} onChange={checkBoxClick} id={item.id}/>} label={item.id} />
-                            </Box>
-              })}
-          </Box>
-
-             <PDFDownloadLink document={<VisionAsPDF />} style={styles.button} fileName="myvision.pdf">
-                {({ blob, url, loading, error }) =>
-                    loading ? <CircularProgress /> :           
-                            <Button variant="contained" color="primary"> Save As PDF </Button>
-                }
-            </PDFDownloadLink> 
-          
-          </StyledPaper>
+  return(
+        <StyledPaper message="Customization">
+        <Box m={1}>
+        {checkBoxes.map((item,index)=>{
+          return  <Box>
+                      <FormControlLabel control={<Checkbox checked={item.value} onChange={checkBoxClick}
+                         id={item.id}/>} label={item.id} />
+                    </Box>}
+          )
+        }
+        </Box>
+            <PDFDownloadLink document={<VisionAsPDF />} style={styles.button} fileName="myvision.pdf">
+              {({ blob, url, loading, error }) =>
+                  loading ? <CircularProgress /> :           
+                          <Button variant="contained" color="primary"> Save As PDF </Button>
+              }
+          </PDFDownloadLink> 
+        
+        </StyledPaper>
 
     );
 }

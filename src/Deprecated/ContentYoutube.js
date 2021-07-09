@@ -1,6 +1,6 @@
 import 'react-calendar/dist/Calendar.css';
 import React, { useEffect, useState } from 'react';
-import YoutubeEmbed from './YoutubeEmbed';
+import YoutubeEmbed from '../Components/YoutubeEmbed';
 import firebase,{storage} from '../firebase';
 import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
 

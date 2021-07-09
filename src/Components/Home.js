@@ -1,24 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Header from './Header';
-import Footer from './Footer';
+
 import {  BrowserRouter as Router,  Route,  Link,  Switch,  Redirect, withRouter, useHistory} from 'react-router-dom';
-import Dream from './Dream';
-import Plan from './Plan';
-import Rate from './Rate';
-import Act from './Act';
-import Health from './Health';
-import Money from './Money';
-import Career from './Career';
+
 import Typography from '@material-ui/core/Typography';
 import firebase from '../firebase';
 import { AuthContext } from "../Components/Auth.js";
 import MyCalendar from './MyCalendar';
-import LifeAccordionTab from './LifeAccordionTab';
 import Profile from './Profile';
 import HeaderSideMenu from './HeaderSideMenu';
-import ManageVision from './ManageVision';
-import ContentYoutube from './ContentYoutube';
-import VisionBoard from './VisionBoard';
 import Vision from './Vision';
 import { Box, Button, CircularProgress, Container } from '@material-ui/core';
 import { orange } from '@material-ui/core/colors';

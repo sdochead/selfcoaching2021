@@ -6,7 +6,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import firebase from '../firebase';
-import { AuthContext } from "./Auth.js";
+import { AuthContext } from "../Components/Auth.js";
 
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
