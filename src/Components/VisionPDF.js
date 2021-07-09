@@ -267,7 +267,7 @@ const VisionAsPDF = (props) => {
           return  <Box>
                       <FormControlLabel control={<Checkbox checked={item.value} onChange={checkBoxClick}
                          id={item.id}/>} label={item.id} />
-                    </Box>}
+                  </Box>}
           )
         }
         </Box>
