@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import firebase from '../firebase';
 import {Redirect} from 'react-router-dom';
 import { Box, CircularProgress } from "@material-ui/core";
-
+ 
 export const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => {
