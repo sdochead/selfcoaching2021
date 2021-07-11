@@ -54,20 +54,16 @@ const history = useHistory();
     console.log("content");
 
     return(
-
         <div>
-
             {loading ? <h2>Loading...</h2> :
-    
             contents.map((content,index)=>(
                 <div>
-
-                        <StyledPaper message={content.Title}>
-                            <YoutubeEmbed embedId={content.YoutubeID}/>
-                            <Button color="primary" >
-                                More
-                            </Button>
-                        </StyledPaper>
+                    <StyledPaper message={content.Title}>
+                        <YoutubeEmbed embedId={content.YoutubeID}/>
+                        <Button color="primary" >
+                            More
+                        </Button>
+                    </StyledPaper>
                 </div>
                 ))
             }
