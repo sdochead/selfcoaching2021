@@ -333,6 +333,7 @@ function Metrics(props){
     const [metricProperties,setMetricProperties] = useState([
         { field: 'id', headerName: 'Name', width: 150 },
         { field: 'topic', headerName: 'Force', width: 90 },
+        { field: 'unit', headerName: 'Unit', width: 90 },        
     ]);
     const [metricDefinitions,setMetricDefinitions] = useState([]);
     const [disableEditBut, setDisableEditBut] = useState(true);
@@ -444,36 +445,34 @@ function Metrics(props){
     return (
         <>
         <Paper  id="metrics" className={classes.paper}>
-        <AppBar p={1} position="static" className={classes.header}>   
-            <Typography p={1} >Metrics </Typography>                  
-        </AppBar>
-
-        <Grid container xs={12} justify="center" spacing={1}>
-
-            <Grid item xs={2} className={classes.content}>
-                <Button  color="primary" variant="contained"
-                    fullWidth onClick={handleAdd}>
-                    <Add />
-                </Button>
+            <AppBar p={1} position="static" className={classes.header}>   
+                <Typography p={1} >Metrics </Typography>                  
+            </AppBar>
+            <Grid container xs={12} justify="center" spacing={1}>
+                <Grid item xs={2} className={classes.content}>
+                    <Button  color="primary" variant="contained"
+                        fullWidth onClick={handleAdd}>
+                        <Add />
+                    </Button>
+                </Grid>
+                <Grid item xs={2} className={classes.content}>
+                    <Button  color="primary" variant="contained"
+                        fullWidth disabled>
+                        <Edit/>
+                    </Button>
+                </Grid>
+                <Grid item xs={2} className={classes.content}>
+                    <Button  color="primary" variant="contained"
+                        fullWidth disabled={disableEditBut} onClick={removeMetric}>
+                        <Delete/>
+                    </Button>
+                </Grid>
             </Grid>
-            <Grid item xs={2} className={classes.content}>
-                <Button  color="primary" variant="contained"
-                    fullWidth disabled>
-                    <Edit/>
-                </Button>
-            </Grid>
-            <Grid item xs={2} className={classes.content}>
-                <Button  color="primary" variant="contained"
-                    fullWidth disabled={disableEditBut} onClick={removeMetric}>
-                    <Delete/>
-                </Button>
-            </Grid>
-        </Grid>
-
-        <div style={{ height: 400, width: '100%' }}>
-            <DataGrid rows={metricDefinitions} columns={metricProperties} pageSize={5} checkboxSelection={false} onRowClick={handleRowClick}/>
-        </div>    
-    
+            <div style={{ height: 400, width: '100%' }}>
+                <DataGrid rows={metricDefinitions} columns={metricProperties} 
+                    pageSize={5} checkboxSelection={false}
+                    onRowClick={handleRowClick}/>
+            </div>    
         </Paper> 
         
         <Dialog disableBackdropClick disableEscapeKeyDown

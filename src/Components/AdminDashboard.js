@@ -52,7 +52,8 @@ const useStyles = makeStyles((theme) => ({
     },
     header:{
         alignItems: 'center',
-        background : '#ff8a65'
+        background : '#ff8a65',
+        color: '#ffffff'
     },
     headerDetails:{
       alignItems: 'center',
@@ -106,8 +107,12 @@ function Metrics(props){
     const metric_ref = firebase.firestore().collection("Metrics");
 
     const [metricProperties,setMetricProperties] = useState([
-        { field: 'id', headerName: 'Name', width: 150 },
-        { field: 'topic', headerName: 'Force', width: 90 },
+        { field: 'id', headerName: 'Name',
+          headerClassName: classes.header, width: 150 },
+        { field: 'topic', headerName: 'Force', 
+          headerClassName: classes.header, width: 90 },
+        { field: 'unit', headerName: 'Unit',
+          headerClassName: classes.header },
     ]);
     const [metricDefinitions,setMetricDefinitions] = useState([]);
     const [disableEditBut, setDisableEditBut] = useState(true);
@@ -266,7 +271,9 @@ function Metrics(props){
         </Grid>
 
         <div style={{ height: 400, width: '100%' }}>
-            <DataGrid rows={metricDefinitions} columns={metricProperties} pageSize={5} checkboxSelection={false} onRowClick={handleRowClick}/>
+            <DataGrid rows={metricDefinitions} columns={metricProperties}
+                pageSize={5} checkboxSelection={false}
+                onRowClick={handleRowClick}/>
         </div>    
     
         </StyledPaper> 
