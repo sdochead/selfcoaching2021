@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import firebase from '../firebase';
 import { AuthContext } from "./Auth.js";
 import PropTypes from 'prop-types';
-import { AppBar, Avatar, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Fab, FormControl, FormControlLabel, FormHelperText, IconButton, Input, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, ListSubheader, Paper, Select, Slider, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
+import { AppBar, Avatar, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Fab, FormControl, FormControlLabel, FormHelperText, GridList, GridListTile, GridListTileBar, IconButton, Input, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, ListSubheader, Paper, Select, Slider, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { storage } from "../firebase";
 import Gallery from 'react-photo-gallery';
@@ -21,8 +21,10 @@ export default function Quantitative(props){
     const [openMetricDialog,setOpenMetricDialog]=useState(false);
     const [selectedMetricNameDialog,setSelectedMetricNameDialog]=useState("");
     const [selectedMetricValueDialog,setSelectedMetricValueDialog]=useState(0);
+    const [selectedMetric,setSelectMetric] = useState("");
     const [unit,setUnit] =useState("unit");
     const [url,setUrl] =useState("");
+    const [metric_already_exists,set_metric_already_exists] = useState(false);
 
   
     const metrics_expected_ref = user_ref.collection("ExpectedMetrics"); 
@@ -151,11 +153,62 @@ export default function Quantitative(props){
       });       
   }
   }
+
+  function metricImageClick(id){
+      console.log("metric image clicked. Name = ", id);
+      setSelectedMetricNameDialog(id);
+      var uu = getUnitAndUrl(metricDefintions,id);
+      console.log("metric dialog" , uu);
+      setUnit(uu.unit);
+      console.log(metrics);
+      var index = metrics.findIndex(obj => obj.name===id);
+      console.log("index ",index);
+
+      if(index===-1)
+          set_metric_already_exists(false);
+      else
+          set_metric_already_exists(true);
+  }
+
+  const MetricList = () =>(
+      <GridList cellHeight={50} cols={2} autoFocus>
+          {metricDefintions.map((item) => (
+            <GridListTile id={item.id} cols={1} onClick={()=>metricImageClick(item.id)}
+                 style={selectedMetricNameDialog===item.id ? {border: '2px solid #021a40', borderRadius: "5px", fontWeight:"bold"}: {}}
+            >
+              <img src={item.url} alt={item.id}/>
+               <GridListTileBar
+                title={item.id}
+                titlePosition="bottom"
+                actionPosition="right"/>
+            </GridListTile>
+          ))}
+      </GridList>
+  )
+
+  const MetricComboBox = () =>(
+        <Box m={1} display='flex' alignItems="left">
+        <Box>
+          <Typography>Metric Name: </Typography>
+          <Select id="my-input"  variant="outlined" native onChange={selectAddMetricDialogChangeView}>
+              <option aria-label="None" value="" />                                
+              {
+                  metricDefintions.map((item,index)=>
+                      <option value={item.id}>{item.id}</option>)
+              }
+          </Select>
+        </Box>
+        <Box pl={2} pt={4}>
+            <Avatar>
+                <img src={url} width={50} height={50} alt={selectedMetricNameDialog} />
+            </Avatar>
+        </Box>
+    </Box>    
+  )
   
       return(
-        <>
-  
-              <List>
+        <>  
+            <List>
               {
                   (metrics===undefined ? console.log("selectedMetrics is undefined"):
                   (metrics.length===0 ? console.log("selectedMetrics has no item"):
@@ -181,60 +234,55 @@ export default function Quantitative(props){
                             })))
                 } 
                                                             
-                      <ListItem>
-                          <ListItemText primary="Add metric"/>
-                          <ListItemSecondaryAction>
-                              <IconButton edge="end" aria-label="add" onClick={openAddMetricDialogView}>
-                                  <Add autoFocus/>
-                              </IconButton>
-                          </ListItemSecondaryAction>
-                      </ListItem>
+                <ListItem>
+                    <ListItemText primary="Add metric"/>
+                    <ListItemSecondaryAction>
+                        <IconButton edge="end" aria-label="add" onClick={openAddMetricDialogView}>
+                            <Add autoFocus/>
+                        </IconButton>
+                    </ListItemSecondaryAction>
+                </ListItem>
                 </List>
-                            
-                <Dialog disableBackdropClick disableEscapeKeyDown open={openMetricDialog} onClose={cancelAddMetricDialogView}>
-                      <DialogTitle>{topic.toUpperCase()} Metrics</DialogTitle>
-                      <DialogContent>
-                          <form >
-                              <Box m={1} display='flex' alignItems="left">
-                                  <Box>
-                                    <Typography>Metric Name: </Typography>
-                                    <Select id="my-input"  variant="outlined" native onChange={selectAddMetricDialogChangeView}>
-                                        <option aria-label="None" value="" />                                
-                                        {
-                                            metricDefintions.map((item,index)=>
-                                                <option value={item.id}>{item.id}</option>)
-                                        }
-                                    </Select>
-                                  </Box>
-                                  <Box pl={2} pt={4}>
-                                      <Avatar>
-                                          <img src={url} width={50} height={50} alt={selectedMetricNameDialog} />
-                                      </Avatar>
-                                  </Box>
-                              </Box>
-                              <Box m={1}>
+
+            <Dialog disableBackdropClick disableEscapeKeyDown open={openMetricDialog} onClose={cancelAddMetricDialogView}>
+{/*                   <DialogTitle id="alert-dialog-title">
+                      <span style={{background: 'red'}}>Use Google's location service?</span>
+                   </DialogTitle> */}
+{                  <DialogTitle style={{background: '#ff8a65', color : "white"}}>{topic.toUpperCase()} Metrics</DialogTitle>
+}                  <DialogContent>
+                    <form >
+{/*                   <MetricComboBox />
+*/}
+                      <MetricList />
+                      {metric_already_exists 
+                        ?   <Box><br /><Alert severity="info">This metric is already set.</Alert></Box>
+                        :   <>
+                              <br />
+                              <Box p={1} justifyItems="center" style={{  border:"solid 2px", borderRadius:5}}>
                                   <FormControl>
                                       <Typography>Target Value:</Typography>
-                                      <TextField disabled={selectedMetricNameDialog==="" ? true : false} type="number" variant="outlined" defaultValue={"0"} id="desiredValue"
+                                      <TextField disabled={selectedMetricNameDialog==="" ? true : false}
+                                        type="number" variant="outlined" defaultValue={"0"} id="desiredValue"
+                                        style={{width:"100px"}}
                                         aria-describedby="my-helper-text" onChange={metricValueChangeView} />
                                       <FormHelperText id="my-helper-text">Target value shall be a number.</FormHelperText>
                                   </FormControl>
-                              </Box>
-                              <Box m={1}>
-                                  <TextField disabled value={unit} onChange={metricValueChangeView} />
-                              </Box>
+                                   <TextField disabled value={unit} onChange={metricValueChangeView} />
+                            </Box>
+                            </>
+                      }
 
-                          </form>
-                      </DialogContent>
-                      <DialogActions>
-                          <Button onClick={cancelAddMetricDialogView} color="primary">
-                                Cancel
-                          </Button>
-                          <Button onClick={okAddMetricDialogView} color="primary">
-                                Add
-                          </Button>
-                      </DialogActions>
-                  </Dialog>
+                      </form>
+                  </DialogContent>
+                  <DialogActions>
+                      <Button onClick={cancelAddMetricDialogView} color="primary">
+                            Cancel
+                      </Button>
+                      <Button onClick={okAddMetricDialogView} color="primary">
+                            Add
+                      </Button>
+                  </DialogActions>
+              </Dialog>
         </>
       )
   }

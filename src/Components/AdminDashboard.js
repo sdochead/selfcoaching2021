@@ -6,7 +6,7 @@ import firebase from '../firebase';
 import { useHistory, withRouter } from 'react-router-dom';
 import { AuthContext } from './Auth';
 import { DataGrid, GridAddIcon, GridFilterListIcon, GRID_ROW_SELECTED } from '@material-ui/data-grid';
-import { Alert } from '@material-ui/lab';
+import Alert from '@material-ui/lab/Alert';
 import StyledPaper from './StyledPaper';
 import { storage } from "../firebase";
 
