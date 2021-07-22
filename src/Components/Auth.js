@@ -28,8 +28,7 @@ export const AuthProvider = ({ children }) => {
 
   if(pending){
     //return <>Waiting to authenticate...</>
-    
-    return <Box p={10} width="100%" justifyContent="center"><CircularProgress /></Box>
+    return <Box  style={{position:"relative",width:"100%", height:"400px"}}><CircularProgress style={{position:"absolute", left:"50%" , top:"50%"}}/></Box>
   }
 
   return (

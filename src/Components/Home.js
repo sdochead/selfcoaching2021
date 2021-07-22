@@ -90,15 +90,12 @@ function Home(props) {
 
     <Container component="main" maxWidth="xs">
 
-          loading ? <CircularProgress />
-          :
-          <div>    
+        {loading 
+          ? <Box style={{position:"relative"}}><CircularProgress  style={{position:"absolute", left:"50%" , top:"50%"}} /></Box>
+          : <div>    
               <Router>
                   <HeaderSideMenu role={role} user={currentUser} year={maxYear}/>
                   <Switch>
-      {/*             <Route exact path="/mycalendar"><MyCalendar /></Route>
-                      <Route  path="/"><Einstein /></Route>
-                      <Route exact path="/dream"><Dream /></Route> */}
                       <PrivateRoute exact path="/profile"><Profile /></PrivateRoute>
                       <PrivateRoute exact path="/admin"><AdminDashboard /></PrivateRoute>
                       <PrivateRoute exact path="/content"><Content/></PrivateRoute>
@@ -109,12 +106,9 @@ function Home(props) {
                       <PrivateRoute exact path="/help"><HelpVisionBoard /></PrivateRoute>
                   </Switch>
               </Router>
-
-          </div>
-
+            </div>
+        }
     </Container>
-
-
   );
 
 }

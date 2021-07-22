@@ -121,14 +121,15 @@ export default function Quantitative(props){
   {
     setSelectedMetricValueDialog(event.target.value);
   }
+
   function openEditMetricDialogView(id,name,value,u){
+    setAddDialog(false);
     setSelectedMetricID(id);
     setSelectedMetricNameDialog(name);
     setSelectedMetricValueDialog(value);
     setUnit(u);
     console.log(id,name,value);
     setOpenMetricDialog(true);
-    setAddDialog(false);
 }
   function openAddMetricDialogView(){
       setSelectedMetricNameDialog("");
@@ -182,25 +183,43 @@ export default function Quantitative(props){
   }
   }
 
-  function metricImageClick(id){
-      console.log("metric image clicked. Name = ", id);
-      setSelectedMetricNameDialog(id);
-      var uu = getUnitAndUrl(metricDefintions,id);
+  function metricImageClick(name){
+      console.log("metric image clicked. Name = ", name);
+      setSelectedMetricNameDialog(name);
+      var uu = getUnitAndUrl(metricDefintions,name);
       console.log("metric dialog" , uu);
       setUnit(uu.unit);
       console.log(metrics);
-      var index = metrics.findIndex(obj => obj.name===id);
+      set_metric_already_exists(exists_metric(name));
+
+  }
+
+  function exists_metric(name){
+      var index = metrics.findIndex(obj => obj.name===name);
       console.log("index ",index);
 
       if(index===-1)
-          set_metric_already_exists(false);
+          return false;
       else
-          set_metric_already_exists(true);
+          return true;
+  }
+
+  function get_metric_URL(name){
+      console.log("get_metric_URL",name);
+
+      var index = metricDefintions.findIndex(obj => obj.id===name);
+      
+      console.log("index",index);
+      if(index===-1) return "";
+      return metricDefintions[index].url;
   }
 
   const MetricList = () =>(
       <GridList cellHeight={50} cols={2} autoFocus>
-          {metricDefintions.map((item) => (
+          {metricDefintions.map((item) => 
+          ((exists_metric(item.id) 
+            ? null 
+            :
             <GridListTile id={item.id} cols={1} onClick={()=>metricImageClick(item.id)}
                  style={selectedMetricNameDialog===item.id ? {border: '2px solid #021a40', borderRadius: "5px", fontWeight:"bold"}: {}}
             >
@@ -210,7 +229,7 @@ export default function Quantitative(props){
                 titlePosition="bottom"
                 actionPosition="right"/>
             </GridListTile>
-          ))}
+          )))}
       </GridList>
   )
 
@@ -237,32 +256,32 @@ export default function Quantitative(props){
       return(
         <>  
             <List>
-              {
+            {
                   (metrics===undefined ? console.log("selectedMetrics is undefined"):
                   (metrics.length===0 ? console.log("selectedMetrics has no item"):
                   metrics.map((metric,index) => {
-                      return (
-                                  <ListItem id={index} >
-                                        <ListItemAvatar>
-                                            <Avatar>
-                                              {metric.url===undefined
-                                                ? <Photo />
-                                                : <img src={metric.url} alt={metric.name} />
-                                              }
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText primary={metric.name} secondary={metric.value+" "+metric.unit}/>
-                                        <ListItemIcon>
-                                            <IconButton id={metric.name} edge="false" aria-label="edit" onClick={()=>openEditMetricDialogView(metric.id,metric.name,metric.value,metric.unit)}>
-                                                <Edit />
-                                            </IconButton>
-                                            <IconButton id={metric.name} edge="end" aria-label="delete" onClick={()=>deleteMetricClick(metric.id)}>
-                                                <Delete />
-                                            </IconButton>
-                                        </ListItemIcon>                                        
-                                    </ListItem>
-                              );
-                            })))
+                  return (
+                          <ListItem id={index} >
+                                <ListItemAvatar>
+                                    <Avatar>
+                                      {metric.url===undefined
+                                        ? <Photo />
+                                        : <img src={get_metric_URL(metric.name)} alt={metric.name} />
+                                      }
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary={metric.name} secondary={metric.value+" "+metric.unit}/>
+                                <ListItemIcon>
+                                    <IconButton id={metric.name} edge="false" aria-label="edit" onClick={()=>openEditMetricDialogView(metric.id,metric.name,metric.value,metric.unit)}>
+                                        <Edit />
+                                    </IconButton>
+                                    <IconButton id={metric.name} edge="end" aria-label="delete" onClick={()=>deleteMetricClick(metric.id)}>
+                                        <Delete />
+                                    </IconButton>
+                                </ListItemIcon>                                        
+                            </ListItem>
+                    );
+                    })))
                 } 
                                                             
                 <ListItem>
@@ -277,7 +296,7 @@ export default function Quantitative(props){
 
             <Dialog disableBackdropClick disableEscapeKeyDown open={openMetricDialog} onClose={cancelAddMetricDialogView}>
                   <DialogTitle style={{background: '#ff8a65', color : "white"}}>
-                      {addDialog ? topic.toUpperCase()+" new metric" : selectedMetricNameDialog}
+                      {selectedMetricNameDialog==="" ? "Choose a metric:" : selectedMetricNameDialog}
                       </DialogTitle>
                   <DialogContent>
                     <form >
@@ -287,9 +306,8 @@ export default function Quantitative(props){
                         :   <Box>
                               <br />
                               <Grid container 
-                                style={{display:'flex',flexDirection: 'column', alignItems: 'center',
-                                border:"solid 2px", borderRadius:5, paddingTop:"10px", paddingBottom:"10px",
-                                minWidth:"250px" }}>
+                                style={{display:'flex', flexDirection: 'column', alignItems: 'center',
+                                paddingTop:"10px", paddingBottom:"10px", minWidth:"250px"}}>
                                     <Grid item>
                                         <Typography p={2}>What is your target Value?</Typography>
                                         <TextField disabled={selectedMetricNameDialog==="" ? true : false}
