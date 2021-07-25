@@ -142,6 +142,21 @@ const  browseImage = async(event)=>{
 
       if(file===null) return;
 
+      if((file.size/1024>300))
+      {
+          alert("This image is " + Math.round(file.size/1024) + "KB" + ". The maximum size is 300KB.");
+          return;
+      }
+
+/*    //to get the height and width of the uploading image
+      var img = new Image();
+      img.onload = function() {
+        alert("The image is " + this.width + "x" + this.height);
+        console.log("The image is " + this.width + "x" + this.height);
+      }
+      img.src = URL.createObjectURL(event.target.files[0]); 
+*/
+
       if(window.confirm("Are you sure to change the picture?"))
       {
           setLoadingPix(true);
@@ -195,9 +210,7 @@ const TopicsGallery = () =>(
             {images.map((image) => (
             <GridListTile key={image.key} cols={1}
                 style={selectedTopic===image.alt ? {border: '2px solid #021a40', borderRadius: "5px"}: {}}>
-              <img src={image.src} alt={image.alt}
-              onClick={galleryClickView}
-              />
+              <img src={image.src} alt={image.alt} onClick={galleryClickView}/>
               <GridListTileBar
                 title={image.alt.toUpperCase()}
                 titlePosition="bottom"
